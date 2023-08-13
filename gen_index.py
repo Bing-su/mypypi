@@ -6,7 +6,7 @@ from pathlib import Path
 from simple503 import make_simple
 
 base_url = "https://github.com/Bing-su/mypypi/releases/download/index"
-pattern = r'<a href=".*(?P<last>/[^/]+?/)">'
+pattern = r'<a href=".*/(?P<last>[^/]+?/)">'
 root = Path(__file__).parent
 
 
