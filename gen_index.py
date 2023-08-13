@@ -1,6 +1,5 @@
-import shutil
 import re
-import subprocess
+import shutil
 from pathlib import Path
 
 from simple503 import make_simple
@@ -16,16 +15,17 @@ def remove_if_exists(path):
 
 
 def fix_main_index():
-    index = root.joinpath("index.html")
-    data = index.read_text("utf-8")
+    html = root.joinpath("index", "index.html")
+    data = html.read_text("utf-8")
     data = re.sub(pattern, r'<a href="\g<last>">', data)
-    index.write_text(data, "utf-8")
+    html.write_text(data, "utf-8")
 
 
 def gen_index():
     packages = root.joinpath("packages")
     wheels = packages.joinpath("wheels")
     indexes = packages.joinpath("indexes")
+    pypi = root.joinpath("index")
 
     zipfiles = list(packages.glob("*.zip"))
     for zipfile in zipfiles:
@@ -34,7 +34,7 @@ def gen_index():
     make_simple(wheels, indexes, base_url=base_url)
 
     ignore = shutil.ignore_patterns("*.whl", "*.tar.gz", "*.metadata")
-    shutil.copytree(indexes, root, ignore=ignore, dirs_exist_ok=True)
+    shutil.copytree(indexes, pypi, ignore=ignore, dirs_exist_ok=True)
     fix_main_index()
     remove_if_exists(indexes)
     remove_if_exists(wheels)
